@@ -11,41 +11,40 @@
  */
 class Solution {
 public:
-    vector<vector<int>> ans;
     vector<vector<int>> levelOrder(TreeNode* root) {
-                if (root == nullptr) {
-            return ans;  // Return an empty vector if the tree is empty
+        vector<vector<int>> res;
+        if(root==NULL)
+        {
+            return res;
+        }
+
+        else if (root->left==NULL  && root->right==NULL)
+        {
+            res.push_back({root->val});
+            return res;
         }
         queue <TreeNode*> q;
         q.push(root);
-        TreeNode* temp=root;
-        while(q.size())
+        while(!q.empty())
         {
-            vector<int> level;
-
-            int lvl=q.size();
-            for(int i=0;i<lvl;i++)
+            vector<int> lvl;
+            int size=q.size();
+            for(int i=0;i<size;i++)
             {
-                temp=q.front();
-                q.pop();
-                level.push_back(temp->val);
-                if(temp->left)
-                {
-                q.push(temp->left);
-                }
-                if(temp->right)
-                {
-                q.push(temp->right);
-                }
-
-            }
-            ans.push_back(level);
-
-
-
+            TreeNode *temp = q.front(); 
+            q.pop(); 
             
+            if(temp->left != NULL) 
+                q.push(temp->left); 
+            if(temp->right != NULL) 
+                q.push(temp->right); 
+                
+            lvl.push_back(temp->val); 
+            }
+            res.push_back(lvl);
+
         }
-        return ans;
+        return res;
         
     }
 };
