@@ -26,29 +26,38 @@ public:
 
     vector<int> preorderTraversal(TreeNode* root) {
 
-        // preorder(root);
-        
-
-        vector<int> ans;
-        if(root==NULL)
+        vector <int> in;
+        TreeNode * cur = root;
+        while(cur!=NULL)
         {
-         return ans;
-        }
-        stack<TreeNode*> st;
-        st.push(root);
-        while(!st.empty())
-        {
-            TreeNode* temp=st.top();
-            st.pop();
-            ans.push_back(temp->val);
-            if(temp->right)
-            st.push(temp->right);
-            if(temp->left)
-            st.push(temp->left);
+            if(cur->left==NULL)
+            {
+                in.push_back(cur->val);
+                cur=cur->right;
+            }
+            else
+            {
+                TreeNode* prev=cur->left;
+                while(prev->right && prev->right!=cur)
+                {
+                    prev=prev->right;
+                }
+                if(prev->right==NULL)
+                {
+                    prev->right=cur;
+                    in.push_back(cur->val);
+                    cur=cur->left;
+                }
+                else
+                {
+                    prev->right=NULL;
+                    
+                    cur=cur->right;
+                }
 
+            }
         }
-
-        return ans;
+        return in;
 
         
     }
