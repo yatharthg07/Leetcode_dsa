@@ -11,40 +11,41 @@
  */
 class Solution {
 public:
-    vector<int> ans;
-    void preorder(TreeNode *root)
-    {
-        if(root==NULL)
-        {
-            return;
-        }
-        ans.push_back(root->val);
-        preorder(root->left);
-        preorder(root->right);
 
-    }
     void flatten(TreeNode* root) {
-        if(root==NULL)
+        TreeNode * cur = root;
+        while(cur!=NULL)
         {
-            return;
-        }
-        preorder(root);
-        TreeNode * LL = root;
-        int f=0;
-        for(auto it:ans)
-        {
-            if(f==0)
+            if(cur->left==NULL)
             {
-                f=1;
-                continue;
+                cur=cur->right;
             }
-            TreeNode *temp=new TreeNode(it);
-            LL->left=NULL;
-            LL->right=temp;
-            LL=LL->right;
+            else
+            {
+                TreeNode* prev=cur->left;
+                while(prev->right && prev->right!=cur)
+                {
+                    prev=prev->right;
+                }
+                if(prev->right==NULL)
+                {
+                    prev->right=cur;
+                    cur=cur->left;
+                }
+                else
+                {
+                    prev->right=cur->right;
+                    cur->right=cur->left;
+                    cur->left=NULL;
+                   
 
+                    
+                    cur=cur->right;
+                }
+
+            }
         }
-
+ 
         
     }
 };
