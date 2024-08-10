@@ -6,15 +6,15 @@ public:
         if (grid[0][0] != 0 || grid[n - 1][n - 1] != 0) {
             return -1;
         }
-        map<pair<int, int>, int> mp;
-        for (int i = 0; i < grid.size(); i++) {
-            for (int j = 0; j < grid.size(); j++) {
-                if (grid[i][j] == 0) {
-                    mp[{i, j}] = INT_MAX;
-                }
-            }
-        }
-        mp[{0, 0}] = 0;
+        vector<vector<int>> dist (n,vector<int> (n,INT_MAX));
+        // for (int i = 0; i < grid.size(); i++) {
+        //     for (int j = 0; j < grid.size(); j++) {
+        //         if (grid[i][j] == 0) {
+        //             mp[{i, j}] = INT_MAX;
+        //         }
+        //     }
+        // }
+        dist[0][0] = 0;
         std::priority_queue<
             std::pair<std::pair<int, int>, int>, // The type of the elements
             std::vector<std::pair<std::pair<int, int>, int>>, // The underlying
@@ -28,10 +28,10 @@ public:
         while (!q.empty()) {
             int cordx = q.top().first.first;
             int cordy = q.top().first.second;
-            int dist = q.top().second;
+            int dists = q.top().second;
             q.pop();
 
-            if (dist != mp[{cordx, cordy}]) {
+            if (dists != dist[cordx][cordy]) {
                 continue;
             }
             for (int i = -1; i <= 1; i++) {
@@ -40,16 +40,16 @@ public:
                     int newy = cordy + j;
                     if (newx >= 0 && newx < n && newy >= 0 && newy < n &&
                         grid[newx][newy] == 0) {
-                        if (1 + dist < mp[{newx, newy}]) {
-                            mp[{newx, newy}] = 1 + dist;
-                            q.push({{newx, newy}, 1 + dist});
+                        if (1 + dists < dist[newx][newy]) {
+                            dist[newx][newy] = 1 + dists;
+                            q.push({{newx, newy}, 1 + dists});
                         }
                     }
                 }
             }
         }
-        if (mp[{n - 1, n - 1}] != INT_MAX)
-            return mp[{n - 1, n - 1}] + 1;
+        if (dist[n - 1][ n - 1] != INT_MAX)
+            return dist[n - 1][n - 1] + 1;
         else
             return -1;
     }
