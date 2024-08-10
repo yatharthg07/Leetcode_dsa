@@ -15,19 +15,12 @@ public:
         //     }
         // }
         dist[0][0] = 0;
-        priority_queue<pair<int,pair<int, int>>, // The type of the elements
-        vector<pair<int,pair<int, int>>>, // The underlying
-                                                              // container
-                                                              // (vector)
-        greater<pair<int,pair<int, int>>> // Comparator for
-                                                              // min-heap
-            >
-            q;
+        queue <pair<int,pair<int, int>>> q;
         q.push({0,{0, 0}});
         while (!q.empty()) {
-            int cordx = q.top().second.first;
-            int cordy = q.top().second.second;
-            int dists = q.top().first;
+            int cordx = q.front().second.first;
+            int cordy = q.front().second.second;
+            int dists = q.front().first;
             q.pop();
 
             if (dists != dist[cordx][cordy]) {
