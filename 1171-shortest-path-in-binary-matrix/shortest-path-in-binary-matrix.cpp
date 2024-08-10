@@ -20,10 +20,15 @@ public:
         while (!q.empty()) {
             int cordx = q.front().second.first;
             int cordy = q.front().second.second;
+            if(cordx==n-1 && cordy==n-1)
+            {
+                return dist[n - 1][n - 1] + 1;
+            }
             int dists = q.front().first;
             q.pop();
 
             if (dists != dist[cordx][cordy]) {
+                cout<<"hehe";
                 continue;
             }
             for (int i = -1; i <= 1; i++) {
@@ -40,9 +45,9 @@ public:
                 }
             }
         }
-        if (dist[n - 1][ n - 1] != INT_MAX)
-            return dist[n - 1][n - 1] + 1;
-        else
+        // if (dist[n - 1][ n - 1] != INT_MAX)
+        //     return dist[n - 1][n - 1] + 1;
+        // else
             return -1;
     }
 };
