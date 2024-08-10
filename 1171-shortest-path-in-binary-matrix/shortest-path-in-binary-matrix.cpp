@@ -15,20 +15,19 @@ public:
         //     }
         // }
         dist[0][0] = 0;
-        std::priority_queue<
-            std::pair<std::pair<int, int>, int>, // The type of the elements
-            std::vector<std::pair<std::pair<int, int>, int>>, // The underlying
+        priority_queue<pair<int,pair<int, int>>, // The type of the elements
+        vector<pair<int,pair<int, int>>>, // The underlying
                                                               // container
                                                               // (vector)
-            std::greater<std::pair<std::pair<int, int>, int>> // Comparator for
+        greater<pair<int,pair<int, int>>> // Comparator for
                                                               // min-heap
             >
             q;
-        q.push({{0, 0}, 0});
+        q.push({0,{0, 0}});
         while (!q.empty()) {
-            int cordx = q.top().first.first;
-            int cordy = q.top().first.second;
-            int dists = q.top().second;
+            int cordx = q.top().second.first;
+            int cordy = q.top().second.second;
+            int dists = q.top().first;
             q.pop();
 
             if (dists != dist[cordx][cordy]) {
@@ -42,7 +41,7 @@ public:
                         grid[newx][newy] == 0) {
                         if (1 + dists < dist[newx][newy]) {
                             dist[newx][newy] = 1 + dists;
-                            q.push({{newx, newy}, 1 + dists});
+                            q.push({1 + dists,{newx, newy}});
                         }
                     }
                 }
