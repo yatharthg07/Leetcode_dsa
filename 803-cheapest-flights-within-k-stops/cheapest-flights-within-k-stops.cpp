@@ -23,6 +23,10 @@ public:
             int node = top.second.second;
             if (node == dst&& lvl <= k + 1) {
                 ans=min(ans,dists);
+                if(lvl>k+1)
+                {
+                    break;
+                }
             }
             q.pop();
 
