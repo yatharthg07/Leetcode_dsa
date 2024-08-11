@@ -35,9 +35,9 @@ public:
             {
                 return dists;
             }
-            // if (dists != dist[cordx][cordy]) {
-            //     continue;
-            // }
+            if (dists != dist[cordx][cordy]) {
+                continue;
+            }
             for (int i = 0; i <cord.size()-1; i++) {
                     int newx = cordx + cord[i];
                     int newy = cordy + cord[i+1];
