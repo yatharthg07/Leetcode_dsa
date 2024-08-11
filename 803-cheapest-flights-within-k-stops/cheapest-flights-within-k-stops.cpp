@@ -9,15 +9,15 @@ public:
 
         vector<int> dist(n, INT_MAX);
         dist[src] = 0;
-        priority_queue<pair<int, pair<int, int>>,
-                       vector<pair<int, pair<int, int>>>,
-                       greater<pair<int, pair<int, int>>>>
-            q;
-
+        // priority_queue<pair<int, pair<int, int>>,
+        //                vector<pair<int, pair<int, int>>>,
+        //                greater<pair<int, pair<int, int>>>>
+        //     q;
+        queue <pair<int, pair<int, int>>> q;
         q.push({0, {0, src}});
         int ans=INT_MAX;
         while (!q.empty()) {
-            auto top = q.top();
+            auto top = q.front();
             int lvl = top.first;
             int dists = top.second.first;
             int node = top.second.second;
