@@ -1,59 +1,30 @@
 class Solution {
 public:
-    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst,
-                          int k) {
-        vector<vector<pair<int, int>>> graph(n);
-        for (auto it : flights) {
-            graph[it[0]].push_back({it[1], it[2]});
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<vector<pair<int, int>>> adj(n);
+        for (auto e : flights) {
+            adj[e[0]].push_back({e[1], e[2]});
         }
+        vector<int> stops(n, numeric_limits<int>::max());
+        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> pq;
+        // {dist_from_src_node, node, number_of_stops_from_src_node}
+        pq.push({0, src, 0});
 
-        vector<int> dist(n, INT_MAX);
-        dist[src] = 0;
-        // priority_queue<pair<int, pair<int, int>>,
-        //                vector<pair<int, pair<int, int>>>,
-        //                greater<pair<int, pair<int, int>>>>
-        //     q;
-        queue <pair<int, pair<int, int>>> q;
-        q.push({0, {0, src}});
-        int ans=INT_MAX;
-        while (!q.empty()) {
-            auto top = q.front();
-            int lvl = top.first;
-            int dists = top.second.first;
-            int node = top.second.second;
-            if (node == dst&& lvl <= k + 1) {
-                ans=min(ans,dists);
-                if(lvl>k+1)
-                {
-                    break;
-                }
-            }
-            q.pop();
-
-            // if (dists != dist[node]) {
-            //     continue;
-            // }
-            for (auto it : graph[node]) {
-                int adj = it.first;
-                int cost = it.second;
-                if (dists + cost < dist[adj]) {
-                    dist[adj] = dists + cost;
-                    q.push({1 + lvl, {dist[adj], adj}});
-                }
+        while (!pq.empty()) {
+            auto temp = pq.top();
+            pq.pop();
+            int dist = temp[0];
+            int node = temp[1];
+            int steps = temp[2];
+            // We have already encountered a path with a lower cost and fewer stops,
+            // or the number of stops exceeds the limit.
+            if (steps > stops[node] || steps > k + 1) continue;
+            stops[node] = steps;
+            if (node == dst) return dist;
+            for (auto& [neighbor, price] : adj[node]) {
+                pq.push({dist + price, neighbor, steps + 1});
             }
         }
-        // if (dist[n - 1][ n - 1] != INT_MAX)
-        //     return dist[n - 1][n - 1] + 1;
-        // else
-        if(ans!=INT_MAX)
-        {
-            return ans;
-
-        }
-        else
-        {
-            return -1;
-        }
-        
+        return -1;
     }
 };
