@@ -56,6 +56,7 @@ public:
        
         int n=isConnected.size();
         DisjointSet ds(n);
+        int comp=n;
         vector<pair<int,int>> edges;
         for(int i=0;i<n;i++)
         {
@@ -66,18 +67,12 @@ public:
                     if(ds.findUPar(i)!=ds.findUPar(j))
                     {
                         ds.unionByRank(i,j);
+                        comp--;
                     }
                 }
             }
         }
-        set<int> s;
-        for(int i=0;i<n;i++)
-        {
-            s.insert(ds.findUPar(i));
-
-
-        }
-        return s.size();
+return comp;
 
         
     }
