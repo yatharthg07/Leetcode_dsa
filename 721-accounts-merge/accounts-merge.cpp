@@ -62,7 +62,7 @@ public:
             {
                 if(par.find(accounts[i][j])!=par.end())                
                 {    
-                    ds.unionByRank(i,ds.findUPar(par[accounts[i][j]]));
+                    ds.unionByRank(i,(par[accounts[i][j]]));
                 } 
                 else
                     par[accounts[i][j]]=i;
