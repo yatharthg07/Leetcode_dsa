@@ -1,6 +1,6 @@
 class DisjointSet {
     vector<int> rank, parent, size;
-    int max_size=1;
+    int max_size = 1;
 public:
     DisjointSet(int n) {
         rank.resize(n + 1, 0);
@@ -18,126 +18,80 @@ public:
         return parent[node] = findUPar(parent[node]);
     }
 
-    void unionByRank(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (rank[ulp_u] < rank[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-        }
-        else if (rank[ulp_v] < rank[ulp_u]) {
-            parent[ulp_v] = ulp_u;
+    void unionBySize(int u, int v) {
+        int root_u = findUPar(u);
+        int root_v = findUPar(v);
+        if (root_u == root_v) return;
+        if (size[root_u] < size[root_v]) {
+            parent[root_u] = root_v;
+            size[root_v] += size[root_u];
+            max_size = max(max_size, size[root_v]);
         }
         else {
-            parent[ulp_v] = ulp_u;
-            rank[ulp_u]++;
+            parent[root_v] = root_u;
+            size[root_u] += size[root_v];
+            max_size = max(max_size, size[root_u]);
         }
     }
 
-    void unionBySize(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (size[ulp_u] < size[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-            size[ulp_v] += size[ulp_u];
-            max_size=max(max_size,size[ulp_v]);
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            size[ulp_u] += size[ulp_v];
-            max_size=max(max_size,size[ulp_u]);
-        }
-    }
-    int maxx()
-    {
+    int maxx() {
         return max_size;
     }
-    
-    int sizee(int p)
-    {
+
+    int sizee(int p) {
         return size[p];
     }
-
 };
 
-vector<int> d={-1,0,1,0,-1};
+vector<int> d = {-1, 0, 1, 0, -1};
+
 class Solution {
 public:
     int largestIsland(vector<vector<int>>& grid) {
-        int n=grid.size();
-        DisjointSet ds(n*n);
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                
-                int node=grid[i][j];
-                if(node==1)
-                {
-                    int nodeno= n*i + j;
-                    for(int k=0;k<4;k++)
-                    {
-                        int nx=i+d[k];
-                        int ny=j+d[k+1];
-                        if(nx>=0 && nx<n && ny>=0 && ny<n && grid[nx][ny]==1)
-                        {
-                            int adjno=n*nx + ny;
-                            if(ds.findUPar(nodeno)!=ds.findUPar(adjno))
-                            {
-                                ds.unionBySize(nodeno,adjno);
-                            }
+        int n = grid.size();
+        DisjointSet ds(n * n);
 
+        auto is_valid = [&](int x, int y) {
+            return x >= 0 && x < n && y >= 0 && y < n;
+        };
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    int nodeno = n * i + j;
+                    for (int k = 0; k < 4; k++) {
+                        int nx = i + d[k], ny = j + d[k + 1];
+                        if (is_valid(nx, ny) && grid[nx][ny] == 1) {
+                            int adjno = n * nx + ny;
+                            ds.unionBySize(nodeno, adjno);
                         }
-
-                        
+                    }
                 }
-                }
-
             }
         }
-        int ans=INT_MIN;
 
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                
-                int node=grid[i][j];
-                if(node==0)
-                {
-                    int sum=1;
-                    int nodeno= n*i + j;
+        if (ds.maxx() == n * n) return n * n;
+
+        int ans = ds.maxx();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 0) {
                     unordered_set<int> par;
-                    for(int k=0;k<4;k++)
-                    {
-                        int nx=i+d[k];
-                        int ny=j+d[k+1];
-                        if(nx>=0 && nx<n && ny>=0 && ny<n && grid[nx][ny]==1)
-                        {
-                            int adjno=n*nx + ny;
-                            if(par.find(ds.findUPar(adjno))==par.end())
-                            {
-                                par.insert(ds.findUPar(adjno));
+                    int sum = 1;
+                    for (int k = 0; k < 4; k++) {
+                        int nx = i + d[k], ny = j + d[k + 1];
+                        if (is_valid(nx, ny) && grid[nx][ny] == 1) {
+                            int root = ds.findUPar(n * nx + ny);
+                            if (par.insert(root).second) {
+                                sum += ds.sizee(root);
                             }
                         }
-                        
                     }
-                    for(auto it:par)
-                    {
-                        sum+=ds.sizee(it);
-                    }
-                    ans=max(ans,sum);   
+                    ans = max(ans, sum);
                 }
-
             }
         }
 
-        return ans!=INT_MIN?ans:ds.maxx();
-
-        
-
-
-        
+        return ans;
     }
 };
