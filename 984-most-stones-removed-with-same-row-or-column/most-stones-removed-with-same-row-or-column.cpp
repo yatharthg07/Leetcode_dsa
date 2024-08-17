@@ -1,111 +1,52 @@
 class DisjointSet {
-    vector<int> rank, parent;
+    vector<int> parent, rank;
 public:
-    vector<int> size;
-    int maxx=1;
     DisjointSet(int n) {
-        rank.resize(n + 1, 0);
         parent.resize(n + 1);
-        size.resize(n + 1);
-        for (int i = 0; i <= n; i++) {
-            parent[i] = i;
-            size[i] = 1;
-        }
+        rank.resize(n + 1, 0);
+        for (int i = 0; i <= n; i++) parent[i] = i;
+    }
+    
+    int find(int u) {
+        if (parent[u] != u) 
+            parent[u] = find(parent[u]);
+        return parent[u];
     }
 
-    int findUPar(int node) {
-        if (node == parent[node])
-            return node;
-        return parent[node] = findUPar(parent[node]);
-    }
-
-    void unionByRank(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (rank[ulp_u] < rank[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-        }
-        else if (rank[ulp_v] < rank[ulp_u]) {
-            parent[ulp_v] = ulp_u;
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            rank[ulp_u]++;
-        }
-    }
-
-    void unionBySize(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (size[ulp_u] < size[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-            size[ulp_v] += size[ulp_u];
-            size[ulp_u]=1;
-            maxx=max(maxx,size[ulp_v]);
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            size[ulp_u] += size[ulp_v];
-            size[ulp_v]=1;
-            maxx=max(maxx,size[ulp_u]);
-
+    void unite(int u, int v) {
+        int root_u = find(u);
+        int root_v = find(v);
+        if (root_u != root_v) {
+            if (rank[root_u] > rank[root_v])
+                parent[root_v] = root_u;
+            else if (rank[root_u] < rank[root_v])
+                parent[root_u] = root_v;
+            else {
+                parent[root_v] = root_u;
+                rank[root_u]++;
+            }
         }
     }
 };
 
-int maxx=10e4;
-int maxy=10e4;
 class Solution {
 public:
     int removeStones(vector<vector<int>>& stones) {
-        int n=stones.size();
-        DisjointSet ds(n);
-        unordered_map<int,vector<int>> xcord;
-        unordered_map<int,vector<int>> ycord;
-        for(int i=0;i<n;i++)
-        {
-            int x=stones[i][0];
-            int y=stones[i][1];
-            xcord[x].push_back(i);
-            ycord[y].push_back(i);            
-        }
-        for(auto it:xcord)
-        {
-            if(it.second.size()==1)
-            {
-                continue;
-            }
-            for(int i=0;i<it.second.size()-1;i++)
-            {
-                ds.unionBySize(it.second[i],it.second[i+1]);
-            }
+        int n = stones.size();
+        DisjointSet ds(20000);  // Assume max coordinate is < 10^4
+
+        for (auto& stone : stones) {
+            int x = stone[0] + 10000;  // Offset x by 10000 to avoid overlap with y
+            int y = stone[1];
+            ds.unite(x, y);  // Union x and y coordinates
         }
 
-        for(auto it:ycord)
-        {
-            if(it.second.size()==1)
-            {
-                continue;
-            }
-            for(int i=0;i<it.second.size()-1;i++)
-            {
-                ds.unionBySize(it.second[i],it.second[i+1]);
-            }
+        unordered_set<int> uniqueParents;
+        for (auto& stone : stones) {
+            int x = stone[0] + 10000;
+            uniqueParents.insert(ds.find(x));
         }
 
-        int ans=0;
-        for(int i=0;i<ds.size.size();i++)
-        {
-            if(ds.size[i]>1)
-            {
-                ans+=ds.size[i]-1;
-            }
-        }
-        return ans;
-
-
-        
+        return n - uniqueParents.size();  // Total stones - number of unique components
     }
 };
