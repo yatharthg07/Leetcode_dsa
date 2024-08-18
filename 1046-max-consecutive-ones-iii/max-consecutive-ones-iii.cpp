@@ -13,7 +13,7 @@ public:
             {
                 count++;
             }
-            while(count>k && l<=r)
+            if(count>k && l<=r)
             {
                 if(nums[l]==0)
                 {
