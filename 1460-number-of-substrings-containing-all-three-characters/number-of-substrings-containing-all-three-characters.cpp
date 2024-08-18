@@ -1,32 +1,30 @@
-#define ll long long
 class Solution {
 public:
     int numberOfSubstrings(string s) {
-      ll n=s.size();
-      ll total=n*(n+1)/2;
-      
-      //now write code to find for at most 2 distinct characters
-      ll acnt=0,bcnt=0,ccnt=0,res=0,l=0,r=0;
-      
-      while(r<n){
-          if(s[r]=='a')acnt++;
-          if(s[r]=='b')bcnt++;
-          if(s[r]=='c')ccnt++;
-          
-          while(acnt>0 && bcnt>0 && ccnt>0){
-               if(s[l]=='a')acnt--;
-               if(s[l]=='b')bcnt--;
-               if(s[l]=='c')ccnt--;
-              l++;
-          }
-          
-          res+=(r-l+1);
-          
-        r++;  
-      }
-      
-      
-      return total-res;      //total no of subarrays-subarrys with at most two distinct
+        int lastseen[3]={-1,-1,-1};
+        int count=0;
+        int idx;
+        int total=0;
+        for(int i=0;i<s.size();i++)
+        {
+            if(lastseen[s[i]-'a']==-1)
+            {
+                lastseen[s[i]-'a']=i;
+                count+=1;
+            }
+            else
+            {
+                lastseen[s[i]-'a']=i;
+            }
+            if(count==3)
+            {
+                idx=min({lastseen[0],lastseen[1],lastseen[2]});
+                total+=idx+1;
+
+            }
+
+        }
+        return total;
         
     }
 };
