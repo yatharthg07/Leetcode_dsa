@@ -18,7 +18,7 @@ public:
             {
                 mp[fruits[r]]++;
             }
-            while(count>2)
+            if(count>2)
             {
                 if(mp[fruits[l]]==1)
                 {
