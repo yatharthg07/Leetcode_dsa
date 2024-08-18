@@ -1,32 +1,30 @@
 class Solution {
 public:
-    int plzhelp(string s, int k) {
-    
-        int i = 0;
-        int j = 0;
-        unordered_map<char, int> mp;
-        int count = 0;
+    int numberOfSubstrings(string s) {
+        int lastseen[3]={-1,-1,-1};
+        int count=0;
+        int idx;
+        int total=0;
+        for(int i=0;i<s.size();i++)
+        {
+            if(lastseen[s[i]-'a']==-1)
+            {
+                lastseen[s[i]-'a']=i;
+                count+=1;
+            }
+            else
+            {
+                lastseen[s[i]-'a']=i;
+            }
+            if(count==3)
+            {
+                idx=min({lastseen[0],lastseen[1],lastseen[2]});
+                total+=idx+1;
 
-        while (j < s.length()) {
-            mp[s[j]]++;
-
-            while (mp.size() > k) {
-                mp[s[i]]--;
-                if (mp[s[i]] == 0) {
-                    mp.erase(s[i]);
-                }
-                i++;
             }
 
-            count += (j - i + 1);
-            j++;
         }
-        return count;
-    }
-
-    int numberOfSubstrings(string s) {
-        int k = 3;
-        int count = plzhelp(s, k) - plzhelp(s, k - 1);
-        return count;
+        return total;
+        
     }
 };
