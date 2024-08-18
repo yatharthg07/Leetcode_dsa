@@ -2,11 +2,11 @@ class Solution {
 public:
     int characterReplacement(string s, int k) {
         int n=s.length();
-        char maxc=s[0];
         unordered_map<char,int> mp;
         int ans=0;
         int l=0;
         int r=0;
+        int maxf=1;
         while(r<n)
         {
             if(mp.find(s[r])==mp.end())
@@ -15,18 +15,18 @@ public:
             }
             else{
                 mp[s[r]]++;
-                if(mp[s[r]]>mp[maxc])
+                if(mp[s[r]]>maxf)
                 {
-                    maxc=s[r];
+                    maxf=mp[s[r]];
                 }
             }
-            if(mp[maxc]+k<r-l+1)
+            if(maxf+k<r-l+1)
             {
                 mp[s[l]]--;
                 l++;
 
             }
-            if(mp[maxc]+k>=r-l+1)
+            if(maxf+k>=r-l+1)
             {
                 ans=max(r-l+1,ans);
 
