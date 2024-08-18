@@ -1,16 +1,23 @@
 class Solution {
 public:
     int nthUglyNumber(int n) {
-        set<long> set;
-        long nthNumber = 1;
-        set.insert(nthNumber);
-        for(int i=0; i<n; i++){
-            nthNumber = *set.begin();
-            set.erase(nthNumber);
-            set.insert(nthNumber*2);
-            set.insert(nthNumber*3);
-            set.insert(nthNumber*5);
+        vector<int> dp(n+1,0);
+        int i2=1;int i3=1;int i5=1;
+        dp[1]=1;
+        for(int i=2;i<n+1;i++)
+        {
+            int num=min({dp[i2]*2,dp[i3]*3,dp[i5]*5});
+            dp[i]=num;
+            if (num == dp[i2] * 2) i2++;
+            if (num == dp[i3] * 3) i3++; 
+            if (num == dp[i5] * 5) i5++; 
+
         }
-        return nthNumber;
+
+
+
+
+        return dp[n];
+        
     }
 };
