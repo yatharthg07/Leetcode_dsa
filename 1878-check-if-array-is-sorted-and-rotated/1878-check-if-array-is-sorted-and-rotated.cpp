@@ -5,7 +5,14 @@ public:
         int hehe=0;
         for(int i=0;i<n;i++)
         {
-            if(nums[(i+1)%n]<nums[i])
+            if(i==n-1)
+            {
+                if(nums[0]<nums[i])
+                {
+                    hehe++;
+                }
+            }
+            else if(nums[(i+1)]<nums[i])
             {
                 hehe++;
             }
