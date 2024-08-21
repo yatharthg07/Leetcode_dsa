@@ -2,9 +2,11 @@ class Solution {
 public:
     void reverse(int idx,int end ,vector<int> & nums)
     {
-        for(int i=idx;i<(idx+end+1)/2;i++)
+        while(idx<end)
         {
-            swap(nums[i],nums[end-(i-idx)]);
+            swap(nums[idx],nums[end]);
+            idx++;
+            end--;
         }
     }
     void rotate(vector<int>& nums, int k) {
