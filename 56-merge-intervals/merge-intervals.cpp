@@ -7,26 +7,19 @@ public:
         {
             mp[it[0]]=max(mp[it[0]],it[1]);
         }
-        int start=(*mp.begin()).first;
-        int last=(*mp.begin()).second;
-        int i=0;
+        int start = mp.begin()->first;
+        int last = mp.begin()->second;
         for(auto it:mp)
         {
-            if(!i) {i ++ ; continue;}
             if(it.first>last)
             {
                 ans.push_back({start,last});
                 start=it.first;
-
             }
-            if(it.second>last)
-            {
-                last=it.second;
-            }
-
+            last=max(last,it.second);
 
         }
-                ans.push_back({start,last});
+        ans.push_back({start,last});
 
         return ans;
         
