@@ -1,53 +1,26 @@
-#define ll long long 
 class MinStack {
-public:
-    stack<ll> st;
-    ll min;
+  stack < pair < int, int >> st;
 
-    MinStack() {}
-    
-    void push(int val) {
-        if(st.empty()) {
-            st.push(val);
-            min = val;
-        } else {
-            if(val < min) {
-                st.push(2ll * val - min);  
-                min = val;
-            } else {
-                st.push(val);
-            }
-        }
+  public:
+    void push(int x) {
+      int min;
+      if (st.empty()) {
+        min = x;
+      } else {
+        min = std::min(st.top().second, x);
+      }
+      st.push({x,min});
     }
-    
-    void pop() {
-       ll top = st.top();
-        if(top < min) {
-            min = 2ll * min - top;  
-        }
-        st.pop();
-    }
-    
-    int top() {
-        ll top = st.top();
-        if(top < min) {
 
-            return min;
-        } else {
-            return top;
-        }
-    }
-    
-    int getMin() {
-        return min;
-    }
+  void pop() {
+    st.pop();
+  }
+
+  int top() {
+    return st.top().first;
+  }
+
+  int getMin() {
+    return st.top().second;
+  }
 };
-
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack* obj = new MinStack();
- * obj->push(val);
- * obj->pop();
- * int param_3 = obj->top();
- * int param_4 = obj->getMin();
- */
