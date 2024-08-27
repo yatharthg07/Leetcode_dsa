@@ -19,11 +19,6 @@ public:
             }
         }
         for(int i=0;i<n;i++)
-        {
-            cout<<right[i]<<" ";
-        }
-        cout<<endl;
-        for(int i=0;i<n;i++)
         {   
             if(height[i]>lg)
             {
@@ -34,11 +29,7 @@ public:
                 left[i]=lg;
             }
         }
-        for(int i=0;i<n;i++)
-        {
-            cout<<left[i]<<" ";
-        }
-        cout<<endl;
+
         for(int i=0;i<n;i++)
         {
             if(left[i]==-1||right[i]==-1)
@@ -47,12 +38,6 @@ public:
             }
             ans[i]=min(left[i],right[i])-height[i];
         }
-        for(int i=0;i<n;i++)
-        {
-            cout<<ans[i]<<" ";
-        }
-        cout<<endl;
-        cout<< accumulate(ans.begin(),ans.end(),0);
         return accumulate(ans.begin(),ans.end(),0);
         
     }
