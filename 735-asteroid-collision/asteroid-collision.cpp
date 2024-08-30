@@ -10,7 +10,7 @@ public:
             {
                 while (!st.empty() && abs(it) > abs(st.top()) && st.top() > 0)
                     st.pop();
-                if(!st.empty() and st.top() == abs(it)) {
+                if(!st.empty() and st.top() == abs(it) && st.top()>0) {
                     st.pop();
                 }
                 else if(st.empty() || st.top() < 0) {
