@@ -7,15 +7,14 @@ public:
     }
     
     int next(int price) {
-        cnt=0;
+        cnt=1;
         while(!st.empty() && st.top().first<=price)
         {
             cnt+=st.top().second;
             st.pop();
-            cnt++;
         }
         st.push({price,cnt});
-        return cnt+1;             
+        return cnt;             
     }
 };
 
