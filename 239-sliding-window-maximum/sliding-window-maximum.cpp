@@ -5,14 +5,7 @@ public:
         vector<int> ans;
         for(int i=0;i<nums.size();i++)
         {
-            if(st.empty())
-            {
-                st.push_back(i);
-                if(i>=k-1)ans.push_back(nums[st.front()]);
-
-                continue;
-            }
-            if(i-st.front()>=k)
+            if(!st.empty() && i-st.front()>=k )
             {                  
 
                 st.pop_front();
