@@ -1,61 +1,79 @@
 class LFUCache {
-public:
-    int capacity, minFreq;
-    unordered_map<int, pair<int, list<pair<int,int>>::iterator>> mp; // {key: {frequency, iterator in freq list}}
-    unordered_map<int, list<pair<int,int>>> freq; // {freq: list of {key, value}}
+private:
+    int cap;
+    int size;
+    int minFreq;
+    unordered_map<int, list<vector<int>>::iterator> mp; // key -> iterator to the list containing {key, value, freq}
+    unordered_map<int, list<vector<int>>> freq; // freq -> list of vectors {key, value, freq}
 
+public:
     LFUCache(int capacity) {
-        this->capacity = capacity;
-        this->minFreq = 0;
+        cap = capacity;
+        size = 0;
+        minFreq = 0;
     }
 
-    int get(int key) {
-        if (mp.find(key) == mp.end()) return -1;
+    void makeMostFrequentlyUsed(int key) {
+        auto &vec = *(mp[key]);
 
-        // Get current frequency and the iterator of the key
-        int currentFreq = mp[key].first;
-        auto node = mp[key].second;
-        int value = node->second;
+        int value = vec[1];
+        int f = vec[2];
 
-        // Remove the key from the current frequency list
-        freq[currentFreq].erase(node);
-        if (freq[currentFreq].empty()) {
-            freq.erase(currentFreq);
-            if (minFreq == currentFreq) {
+        // Remove from current frequency list
+        freq[f].erase(mp[key]);
+        if (freq[f].empty()) {
+            freq.erase(f);
+            if (minFreq == f) {
                 minFreq++;
             }
         }
 
-        // Increase frequency and add to the new list
-        freq[currentFreq + 1].push_front({key, value});
-        mp[key] = {currentFreq + 1, freq[currentFreq + 1].begin()};
+        // Increase frequency and add to the new frequency list
+        f++;
+        freq[f].push_front({key, value, f});
+        mp[key] = freq[f].begin();
+    }
+
+    int get(int key) {
+        if (mp.find(key) == mp.end()) {
+            return -1;
+        }
+
+        auto &vec = *(mp[key]);
+        int value = vec[1];
+
+        makeMostFrequentlyUsed(key);
 
         return value;
     }
 
     void put(int key, int value) {
-        if (capacity == 0) return;
+        if (cap == 0) return;
 
         if (mp.find(key) != mp.end()) {
-            // Key exists, update the value and frequency
-            mp[key].second->second = value;
-            get(key); // This will handle the frequency increment
-            return;
-        }
+            // Key already exists, update the value and make it most frequently used
+            auto &vec = *(mp[key]);
+            vec[1] = value;
+            makeMostFrequentlyUsed(key);
+        } else {
+            if (size == cap) {
+                // Evict the least frequently used key (and least recently used if tied)
+                auto &listToEvict = freq[minFreq];
+                int keyToEvict = listToEvict.back()[0];
+                listToEvict.pop_back();
+                if (listToEvict.empty()) {
+                    freq.erase(minFreq);
+                }
+                mp.erase(keyToEvict);
+                size--;
+            }
 
-        if (mp.size() == capacity) {
-            // Evict the least frequently used key
-            auto nodeToEvict = freq[minFreq].back();
-            int evictKey = nodeToEvict.first;
-            freq[minFreq].pop_back();
-            if (freq[minFreq].empty()) freq.erase(minFreq);
-            mp.erase(evictKey);
+            // Insert the new key-value pair with frequency 1
+            freq[1].push_front({key, value, 1});
+            mp[key] = freq[1].begin();
+            minFreq = 1; // Reset minFreq to 1 since we added a new key
+            size++;
         }
-
-        // Insert the new key-value pair with frequency 1
-        freq[1].push_front({key, value});
-        mp[key] = {1, freq[1].begin()};
-        minFreq = 1; // Reset minFreq to 1 since we're adding a new key
     }
 };
 
