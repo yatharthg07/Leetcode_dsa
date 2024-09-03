@@ -13,7 +13,7 @@ public:
         }
         int idx=0;
         sum=0;
-        for(int i=0;i<2*n;i++)
+        for(int i=0;i<n;i++)
         {
             if(sum<0)
             {
