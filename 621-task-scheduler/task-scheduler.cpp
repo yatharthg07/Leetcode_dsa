@@ -1,36 +1,19 @@
-/*
-    MY YOUTUBE VIDEO ON THIS Qn : https://www.youtube.com/watch?v=QDsFBLGL9MM
-    Company Tags  : Facebook
-    Leetcode Link : https://leetcode.com/problems/task-scheduler/
-    
-    Heap based approach : https://github.com/MAZHARMIK/Interview_DS_Algo/blob/master/Heap/Task%20Scheduler.cpp
-*/
-
 class Solution {
 public:
-    int leastInterval(vector<char>& tasks, int p) {
-        int n = tasks.size();
-        
-        if(p == 0)
-            return n;
-        
-        int counter[26] = {0};
-        for(char &ch : tasks) {
-            counter[ch-'A']++;
+
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> mp(26,0);
+        int max_freq=0, count_maxfreq=0, sz=tasks.size();
+        for(char i:tasks){
+            mp[i-'A']++;  // count the number of times a task needs to be done
+            if(mp[i-'A']>max_freq){
+                max_freq=mp[i-'A']; // find maximum frequency 
+            }
+        }   
+        for(int i=0;i<26;i++){
+            if(mp[i]==max_freq) count_maxfreq++; // number of tasks having maximum frequency
         }
-        
-        sort(begin(counter), end(counter));
-        
-        int chunks      = counter[25]-1;
-        int idolSpots   = chunks*p;
-        
-        for(int i = 24; i>=0 ; i--) {
-            idolSpots -= min(chunks, counter[i]);
-        }
-        
-        if(idolSpots > 0)
-            return n + idolSpots;
-        
-        return n;
+        int time= (max_freq-1)*(n+1)+count_maxfreq; // total time taken to complete all tasks
+        return max(time,sz);
     }
 };
