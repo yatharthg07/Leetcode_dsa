@@ -1,39 +1,42 @@
 class Solution {
 public:
-    int leastInterval(vector<char>& tasks, int n) {
-        vector<int> freq(26, 0);
-        for (char task : tasks) {
-            freq[task - 'A']++;
+    int leastInterval(vector<char>& tasks, int p) {
+        int n = tasks.size();
+        unordered_map<char, int> mp;
+        
+        for(char &ch : tasks) {
+            mp[ch]++;
+        }
+
+        priority_queue<int> pq; 
+        int time = 0;
+        
+        for(auto &it : mp) {
+            pq.push(it.second);
         }
         
-        priority_queue<int> pq;
-        for (int count : freq) {
-            if (count > 0) {
-                pq.push(count);
-            }
-        }
+        while(!pq.empty()) {
+            vector<int> temp;
+            for(int i = 1; i<=p+1; i++) {
 
-        int t = 0;
-        queue<pair<int, int>> q; 
-
-        while (!pq.empty() || !q.empty()) {
-
-            if (!q.empty() && q.front().first == t) {
-                pq.push(q.front().second);
-                q.pop();
-            }
-            
-            if (!pq.empty()) {
-                int remainingFreq = pq.top();
-                pq.pop();
-                if (remainingFreq > 1) {
-                    q.push({t + n + 1, remainingFreq - 1}); 
+                if(!pq.empty()) {
+                    temp.push_back(pq.top()-1); 
+                    pq.pop();
                 }
             }
             
-            t++; 
+            for(int &freq : temp) {
+                if(freq > 0)
+                    pq.push(freq);
+            }
+            
+            if(pq.empty()) 
+                time += temp.size();
+            else
+                time += (p+1); 
+            
         }
-
-        return t;
+        
+        return time;
     }
 };
