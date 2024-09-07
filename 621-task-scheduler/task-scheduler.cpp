@@ -1,39 +1,39 @@
 class Solution {
 public:
     int leastInterval(vector<char>& tasks, int n) {
-        unordered_map<char,int> mp;
-        for(auto it:tasks)
-        {
-            mp[it]++;
+        vector<int> freq(26, 0);
+        for (char task : tasks) {
+            freq[task - 'A']++;
         }
-        priority_queue<pair<int,char>> pq;
-        for(auto it:mp)
-        {
-            pq.push({it.second,it.first});
+        
+        priority_queue<int> pq;
+        for (int count : freq) {
+            if (count > 0) {
+                pq.push(count);
+            }
         }
-        int t=0;
-        queue<tuple<int,int,char>> q;
-        while(!pq.empty()||!q.empty())
-        {
-            if(!q.empty() && get<0>(q.front())==t)
-            {
-                pq.push({get<1>(q.front()),get<2>(q.front())});
+
+        int t = 0;
+        queue<pair<int, int>> q; 
+
+        while (!pq.empty() || !q.empty()) {
+
+            if (!q.empty() && q.front().first == t) {
+                pq.push(q.front().second);
                 q.pop();
             }
-            if(pq.empty())
-            {
-                t++;
-                continue;
+            
+            if (!pq.empty()) {
+                int remainingFreq = pq.top();
+                pq.pop();
+                if (remainingFreq > 1) {
+                    q.push({t + n + 1, remainingFreq - 1}); 
+                }
             }
-
-            auto [f,c] = pq.top();
-            pq.pop();
-            if(f>1)
-                q.push({t+n+1,f-1,c});
+            
             t++; 
-
         }
+
         return t;
-        
     }
 };
