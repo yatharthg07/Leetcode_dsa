@@ -8,12 +8,28 @@ public:
     
     void addNum(int num) {
         maxh.push(num);
-        minh.push(maxh.top());
-        maxh.pop();
-        if (minh.size() > maxh.size()) {
-            maxh.push(minh.top());
-            minh.pop();
+        if(!maxh.empty() && !minh.empty())
+        {
+            int x=maxh.top();
+            int y=minh.top();
+            if(x>y)
+            {
+                maxh.pop();
+                minh.push(x);   
+            }
         }
+    if (maxh.size() > minh.size() + 1) {
+        int temp = maxh.top();
+        maxh.pop();
+        minh.push(temp);
+    }
+
+   if (minh.size() > maxh.size() + 1) {
+        int temp = minh.top();
+        minh.pop();
+        maxh.push(temp);
+    }
+
 
         
     }
