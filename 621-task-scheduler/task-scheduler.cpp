@@ -1,33 +1,36 @@
+/*
+    MY YOUTUBE VIDEO ON THIS Qn : https://www.youtube.com/watch?v=QDsFBLGL9MM
+    Company Tags  : Facebook
+    Leetcode Link : https://leetcode.com/problems/task-scheduler/
+    
+    Heap based approach : https://github.com/MAZHARMIK/Interview_DS_Algo/blob/master/Heap/Task%20Scheduler.cpp
+*/
+
 class Solution {
 public:
     int leastInterval(vector<char>& tasks, int p) {
-        int n=tasks.size();
-        vector<int> freq(26, 0);
-        for (char task : tasks) {
-            freq[task - 'A']++;
-        }
-
-        priority_queue<int> pq; 
+        int n = tasks.size();
         
-        for(auto &it : freq) {
-            if(it>0)
-                pq.push(it);
-        }
-        int idlespots= (pq.top()-1)*p;
-        int gapp=pq.top()-1;
-        pq.pop();
-        while(!pq.empty())
-        {
-            int freqq=pq.top();
-            pq.pop();
-            idlespots-=min(freqq,gapp);
-            if(idlespots<=0)
-            {
-                return n;
-            }
-        }
-        return idlespots+n;
+        if(p == 0)
+            return n;
         
+        int counter[26] = {0};
+        for(char &ch : tasks) {
+            counter[ch-'A']++;
+        }
         
+        sort(begin(counter), end(counter));
+        
+        int chunks      = counter[25]-1;
+        int idolSpots   = chunks*p;
+        
+        for(int i = 24; i>=0 ; i--) {
+            idolSpots -= min(chunks, counter[i]);
+        }
+        
+        if(idolSpots > 0)
+            return n + idolSpots;
+        
+        return n;
     }
 };
