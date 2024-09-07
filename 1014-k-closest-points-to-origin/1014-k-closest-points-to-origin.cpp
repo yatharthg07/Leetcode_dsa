@@ -1,23 +1,33 @@
 class Solution {
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
-        priority_queue<tuple<double,int,int>> pq;
-        for(auto it:points)
-        {
-            pq.push({sqrt((pow(it[0],2)+pow(it[1],2))),it[0],it[1]});
-            if(pq.size()>k)
-            {
-                pq.pop();
-            }
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int K) {
+        int l = 0, r = points.size() - 1;
+        --K;
+
+        while(true) {
+            int p = partition(points, l, r);
+            if (p == K) break;
+
+            if (p < K) l = p + 1;
+            else r = p - 1;
         }
-        vector<vector<int>> ans;
-        while(!pq.empty())
-        {
-          auto [d,x,y]=pq.top();
-            pq.pop();
-            ans.push_back({x,y});
+
+        return vector<vector<int>>(points.begin(), points.begin() + K + 1);
+    }
+
+private:
+    int distance(vector<int>& p) {
+        return p[0]*p[0] + p[1]*p[1];
+    }
+    
+    int partition(vector<vector<int>>& arr, int low, int high) {
+        int pivot = distance(arr[high]);
+        for (int i = low; i < high; ++i) {
+            if(distance(arr[i]) < pivot)
+                swap(arr[i], arr[low++]);
         }
-        return ans;
-        
+
+        swap(arr[high], arr[low]);
+        return low;
     }
 };
