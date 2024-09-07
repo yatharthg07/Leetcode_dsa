@@ -21,12 +21,14 @@ private:
     }
     
     int partition(vector<vector<int>>& arr, int low, int high) {
+        if (low == high) return low;
+
+        swap(arr[high], arr[low + rand() % (high - low)]);
         int pivot = distance(arr[high]);
         for (int i = low; i < high; ++i) {
             if(distance(arr[i]) < pivot)
                 swap(arr[i], arr[low++]);
         }
-
         swap(arr[high], arr[low]);
         return low;
     }
