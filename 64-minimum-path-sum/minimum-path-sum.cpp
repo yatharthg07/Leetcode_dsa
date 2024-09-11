@@ -4,9 +4,9 @@ public:
         int m=grid.size();
         int n=grid[0].size();
         // vector<vector<int>> dp(m,vector<int> (n,0));
-        vector<int> prev(n);
+        // vector<int> prev(n);
         vector<int> curr(n);
-        prev[0]=grid[0][0];
+        // prev[0]=grid[0][0];
         curr[0]=grid[0][0];
         for(int i=0;i<m;i++)
         {
@@ -20,7 +20,7 @@ public:
                 int left=INT_MAX;
                 if(i>0)
                 {
-                    up=prev[j];
+                    up=curr[j];
                 }
                 if(j>0)
                 {
@@ -28,7 +28,6 @@ public:
                 }
                 curr[j]=min(up,left)+grid[i][j];
             }
-            prev=curr;
         }
         return curr[n-1];
         
