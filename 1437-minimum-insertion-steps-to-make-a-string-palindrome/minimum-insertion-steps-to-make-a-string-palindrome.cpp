@@ -1,28 +1,19 @@
 class Solution {
 public:
-    int minInsertions(string text1) {
-        int n1=text1.length();
-        string text2=text1;
-        reverse(text2.begin(),text2.end());
-        int n2=text2.length();
-        vector<vector<int>> dp(n1+1,vector<int>(n2+1,-1e9));
-        for(int i=0;i<=n1;i++)
-        {
-            for(int j=0;j<=n2;j++)
-            {
-                if(i==0||j==0)
-                {
-                    dp[i][j]=0;
-                    continue;
+    int minInsertions(string s) {
+        int n = s.size();
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+
+        for (int length = 2; length <= n; length++) {
+            for (int l = 0; l <= n - length; l++) {
+                int r = l + length - 1;
+                if (s[l] == s[r]) {
+                    dp[l][r] = dp[l + 1][r - 1];
+                } else {
+                    dp[l][r] = 1 + min(dp[l + 1][r], dp[l][r - 1]);
                 }
-                if(text1[i-1]==text2[j-1])
-                {
-                    dp[i][j]=dp[i-1][j-1]+1;
-                }
-                dp[i][j]=max({dp[i][j],dp[i-1][j],dp[i][j-1]});
             }
         }
-        return n1-dp[n1][n2];
-        
+        return dp[0][n - 1];
     }
 };
