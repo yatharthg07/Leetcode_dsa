@@ -1,25 +1,16 @@
 class Solution {
 public:
     int maxSatisfaction(vector<int>& satisfaction) {
+        sort(satisfaction.begin(), satisfaction.end(), greater<int>());
         int n = satisfaction.size();
-        
-        sort(satisfaction.begin(), satisfaction.end());
-        vector<vector<long long>> dp(n + 1, vector<long long>(n + 1, INT_MIN));
-
-        for (int i = 0; i <= n; i++) {
-            dp[i][0] = 0;
-        }
-        for (int i = 1; i <= n; i++) {
-            for (int t = 1; t <= i; t++) {
-                dp[i][t] = max(dp[i-1][t-1] + satisfaction[i-1] * t, dp[i-1][t]);
+        int presum = 0, res = 0;
+        for (int i = 0; i < n; i++) {
+            presum += satisfaction[i];
+            if (presum < 0) {
+                break;
             }
+            res += presum;
         }
-
-        long long maxSatisfaction = 0;
-        for (int t = 1; t <= n; t++) {
-            maxSatisfaction = max(maxSatisfaction, dp[n][t]);
-        }
-
-        return maxSatisfaction;
+        return res;
     }
 };
