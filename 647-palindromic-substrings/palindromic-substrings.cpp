@@ -1,21 +1,36 @@
 class Solution {
 public:
-
-    int solve(vector<vector<int>>& mem, string& s, int i, int j) {
-        if (i >= j) return 1;
-        if (mem[i][j] >= 0) return mem[i][j];
-        return mem[i][j] = s[i] == s[j] ? solve(mem, s, i+1, j-1) : 0;
-    }
-    
     int countSubstrings(string s) {
-                vector<vector<int>> mem(s.size(), vector<int>(s.size(), -1));
+        int n = s.size();
+        vector<vector<bool>> dp(n, vector<bool>(n));
         int count = 0;
-        for(int i = 0; i < s.size(); ++i) {
-            for(int j = i; j < s.size(); ++j) {
-                count += solve(mem, s, i, j);
+
+        // Single character substrings are palindromes
+        for (int i = 0; i < n; ++i) {
+            dp[i][i] = true;
+            count++; // Each single character is a palindrome
+        }
+
+        // Check for two-character palindromes
+        for (int i = 0; i < n - 1; ++i) {
+            if (s[i] == s[i + 1]) {
+                dp[i][i + 1] = true;
+                count++; // Increment count for two-character palindromes
             }
         }
+
+        // Check for palindromes of length 3 and more
+        for (int diff = 2; diff < n; ++diff) {
+            for (int i = 0; i < n - diff; ++i) {
+                int j = i + diff;
+                // Check if s[i] and s[j] are the same and the inner substring is a palindrome
+                if (s[i] == s[j] && dp[i + 1][j - 1]) {
+                    dp[i][j] = true;
+                    count++; // Increment count for palindromes
+                }
+            }
+        }
+
         return count;
-        
     }
 };
