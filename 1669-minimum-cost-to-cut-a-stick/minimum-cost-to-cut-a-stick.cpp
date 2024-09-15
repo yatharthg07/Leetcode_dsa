@@ -1,32 +1,32 @@
 class Solution {
 public:
-    int solve(unordered_map<string,int> &mp,vector<int> &cuts,int i,int j)
+    int solve(vector<vector<int>> &dp,vector<int> &cuts,int i,int j)
     {
-        string temp=to_string(i)+'-'+to_string(j);
         int ans=1e9;
-        if(i>=j)
+        if(i>j)
         {
             return 0;
         }
-        if(mp.find(temp)!=mp.end())
+        if(dp[i][j]!=-1)
         {
-            return mp[temp];
+            return dp[i][j];
         }
-        for(int k=0;k<cuts.size();k++)
+        for(int k=i;k<=j;k++)
         {
-            if(cuts[k]<j&&cuts[k]>i)
-            {
-                int res=solve(mp,cuts,i,cuts[k])+solve(mp,cuts,cuts[k],j)+j-i;
+
+                int res=solve(dp,cuts,i,k-1)+solve(dp,cuts,k+1,j)+cuts[j+1]-cuts[i-1];
                 ans=min(res,ans);
-            }
 
         }
-         return mp[temp] = (ans == 1e9 ? 0 : ans);
+         return dp[i][j]=ans;
     }
     int minCost(int n, vector<int>& cuts) {
-        unordered_map<string,int> mp;
+        cuts.push_back(0);
+        cuts.push_back(n);        
         sort(cuts.begin(),cuts.end());
-        return solve(mp,cuts,0,n);
+        vector<vector<int>> dp(cuts.size(),vector<int> (cuts.size(),-1));
+        
+        return solve(dp,cuts,1,cuts.size()-2);
         
     }
 };
