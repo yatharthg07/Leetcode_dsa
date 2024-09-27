@@ -31,18 +31,6 @@ public:
 
     bool rec(vector<vector<char>>& board, int i, int j)
     {
-        // Check if all cells are filled
-        bool allFilled = true;
-        for (int x = 0; x < 9; x++) {
-            for (int y = 0; y < 9; y++) {
-                if (board[x][y] == '.') {
-                    allFilled = false;
-                    break;
-                }
-            }
-            if (!allFilled) break;
-        }
-        if (allFilled) return true;
 
         // Find the next empty cell
         for (int x = 0; x < 9; x++) {
@@ -61,7 +49,7 @@ public:
                 }
             }
         }
-        return false;
+        return true;
     }
 
     void solveSudoku(vector<vector<char>>& board) {
