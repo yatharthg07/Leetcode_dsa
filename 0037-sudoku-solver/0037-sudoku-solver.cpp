@@ -1,36 +1,69 @@
 class Solution {
 public:
-bool check(vector<vector<char>> &board, int i, int j, char val)
-{
-    int row = i - i%3, column = j - j%3;
-    for(int x=0; x<9; x++) if(board[x][j] == val) return false;
-    for(int y=0; y<9; y++) if(board[i][y] == val) return false;
-    for(int x=0; x<3; x++)
-    for(int y=0; y<3; y++)
-        if(board[row+x][column+y] == val) return false;
-    return true;
-}
-bool solveSudoku(vector<vector<char>> &board, int i, int j)
-{
-    if(i==9) return true;
-    if(j==9) return solveSudoku(board, i+1, 0);
-    if(board[i][j] != '.') return solveSudoku(board, i, j+1);
-
-    for(char c='1'; c<='9'; c++)
+    vector<int> dir={1,0,-1,0,1};
+    bool val(vector<vector<char>>& board,int i,int j,char c)
     {
-        if(check(board, i, j, c))
+        if(i<0 || i>=9 || j<0 || j>=9|| board[i][j]!='.')
         {
-            board[i][j] = c;
-            if(solveSudoku(board, i, j+1)) return true;
-            board[i][j] = '.';
+            return false;
         }
+        for(int k=0;k<9;k++)
+        {
+            if(k!=i&&board[k][j]==c) return false;
+            if(k!=j&&board[i][k]==c) return false;
+        }
+        int gridx=i/3;
+        int gridy=j/3;
+        for(int x=0;x<3;x++)
+        {
+            for(int y=0;y<3;y++)
+            {
+                int cordx=gridx*3+x;
+                int cordy=gridy*3+y;
+                if(cordx!=i && cordy!=j && board[cordx][cordy]==c)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
-        
-    return false;
-}
+
+    bool rec(vector<vector<char>>& board, int i, int j)
+    {
+
+        // Find the next empty cell
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 9; y++) {
+                if (board[x][y] == '.') {
+                    // Try all possible digits at position (x, y)
+                    for (char c = '1'; c <= '9'; c++) {
+                        if (val(board, x, y, c)) {
+                            board[x][y] = c;
+                            if (rec(board, x, y)) return true;
+                            board[x][y] = '.';
+                        }
+                    }
+                    // If no valid number is found, backtrack
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     void solveSudoku(vector<vector<char>>& board) {
 
-solveSudoku(board, 0, 0);
+        for(int i=0;i<9;i++)
+        {
+            for(int j=0;j<9;j++)
+            {
+                if(board[i][j]=='.')
+                {
+                    rec(board,i,j);
+                    return;
+                }
+            }
+        }
     }
 };
