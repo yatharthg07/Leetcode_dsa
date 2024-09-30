@@ -3,6 +3,8 @@ public:
     int size;
     vector<int> st;
     int maxSize;
+    unordered_map<int,int> mp;
+
     CustomStack(int maxSize) {
         this->size=0;
         this->maxSize=maxSize;
@@ -30,15 +32,15 @@ public:
             int temp=st[size-1];
             st.pop_back();
             size--;
+            mp[size-1]+=mp[size];
+            temp=temp+mp[size];
+            mp[size]=0;
             return temp;
         }
     }
     
     void increment(int k, int val) {
-        for(int i=0;i<min(k,size);i++)
-        {
-            st[i]+=val;
-        }
+        mp[min(k,size)-1]+=val;
     }
 };
 
