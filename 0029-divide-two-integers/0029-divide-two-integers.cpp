@@ -1,20 +1,23 @@
 class Solution {
 public:
     int divide(int dividend, int divisor) {
-        if (dividend == INT_MIN && divisor == -1) {
+        if(dividend==divisor)
+            return 1;
+        bool sign = true;
+        if((dividend<0 && divisor>0) || (divisor<0 && dividend>=0))
+            sign = false;
+        unsigned int n = abs(dividend);
+        unsigned int d = abs(divisor);
+        unsigned int ans = 0;
+        while(n>=d){
+            short count=0;
+            while(n > (d<<(count+1)))
+                count++;
+            ans += (1<<count);
+            n = n - (d*(1<<count));
+        }
+        if(ans == (1<<31) and sign)
             return INT_MAX;
-        }
-        long dvd = labs(dividend), dvs = labs(divisor), ans = 0;
-        int sign = dividend > 0 ^ divisor > 0 ? -1 : 1;
-        while (dvd >= dvs) {
-            long temp = dvs, m = 1;
-            while (temp << 1 <= dvd) {
-                temp <<= 1;
-                m <<= 1;
-            }
-            dvd -= temp;
-            ans += m;
-        }
-        return sign * ans;
+        return (sign?(ans):(-1*(ans)));
     }
 };
