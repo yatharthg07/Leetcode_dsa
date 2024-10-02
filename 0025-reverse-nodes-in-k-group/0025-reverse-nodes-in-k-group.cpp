@@ -10,34 +10,23 @@
  */
 class Solution {
 public:
-    // Function to reverse a linked list between two nodes
-    ListNode* reverse(ListNode* head, ListNode* end) {
-        ListNode* prev = nullptr;
+
+	ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode* cursor = head;
+        for(int i = 0; i < k; i++){
+            if(cursor == nullptr) return head;
+            cursor = cursor->next;
+        }
         ListNode* curr = head;
-        while (curr != end) {
-            ListNode* next = curr->next;
+        ListNode* prev = nullptr;
+        ListNode* nxt = nullptr;
+        for(int i = 0; i < k; i++){
+            nxt = curr->next;
             curr->next = prev;
             prev = curr;
-            curr = next;
+            curr = nxt;
         }
-        return prev;  // new head after reversal
-    }
-
-    ListNode* reverseKGroup(ListNode* head, int k) {
-        // Step 1: Check if there are at least k nodes to reverse
-        ListNode* node = head;
-        for (int i = 0; i < k; i++) {
-            if (!node) return head;  // Not enough nodes, return head as is
-            node = node->next;
-        }
-
-        // Step 2: Reverse the first k nodes
-        ListNode* newHead = reverse(head, node);  // Reverse from head to node (exclusive)
-
-        // Step 3: Recursively reverse the remaining list and connect
-        head->next = reverseKGroup(node, k);
-
-        // Step 4: Return new head of the reversed group
-        return newHead;
+        head->next = reverseKGroup(curr, k);
+        return prev;
     }
 };
