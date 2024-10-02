@@ -10,50 +10,34 @@
  */
 class Solution {
 public:
-
-    ListNode* reverseList(ListNode* head) {
-        ListNode* temp=NULL;
-        ListNode* next;
-        while(head!=NULL)
-        {
-            next=head->next;
-            head->next=temp;
-            temp=head;
-            head=next;
+    // Function to reverse a linked list between two nodes
+    ListNode* reverse(ListNode* head, ListNode* end) {
+        ListNode* prev = nullptr;
+        ListNode* curr = head;
+        while (curr != end) {
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
         }
-        return temp;
-        
+        return prev;  // new head after reversal
     }
 
-
     ListNode* reverseKGroup(ListNode* head, int k) {
-        if(head==NULL||head->next==NULL||k==1)
-        {
-            return head;
+        // Step 1: Check if there are at least k nodes to reverse
+        ListNode* node = head;
+        for (int i = 0; i < k; i++) {
+            if (!node) return head;  // Not enough nodes, return head as is
+            node = node->next;
         }
-        auto it=head;
-        ListNode* prev=NULL;
-        while(it!=NULL)
-        {
-            auto kth=it;
-            for(int i=0;i<k-1;i++)
-            {
-                kth=kth->next;
-                if(kth==NULL)
-                {
-                    if(prev) prev->next=it;
-                    return head;
-                }
-            }
-            auto nxt=kth->next;
-            kth->next=NULL;
-            reverseList(it);
-            if(!prev) head=kth;
-            else prev->next=kth;
-            prev=it;
-            it=nxt;            
-        }
-        return head;
-        
+
+        // Step 2: Reverse the first k nodes
+        ListNode* newHead = reverse(head, node);  // Reverse from head to node (exclusive)
+
+        // Step 3: Recursively reverse the remaining list and connect
+        head->next = reverseKGroup(node, k);
+
+        // Step 4: Return new head of the reversed group
+        return newHead;
     }
 };
