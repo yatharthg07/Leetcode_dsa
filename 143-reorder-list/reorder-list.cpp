@@ -29,14 +29,26 @@ public:
         {
             return;
         }
-        auto temp=head;
-        while(temp->next!=NULL)
+        auto sl=head;
+        auto fs=head->next->next;
+        while(fs!=NULL&&fs->next!=NULL)
         {
-            temp->next=reverseList(temp->next);
-            temp=temp->next;
+            sl=sl->next;
+            fs=fs->next->next;
         }
-        return;
-
+        auto it1=head;
+        auto it2=reverseList(sl->next);
+        sl->next=NULL;
+        while(it1!=NULL)
+        {
+            auto next1=it1->next;
+            auto next2=it2->next;
+            it1->next=it2;
+            if(next1) it2->next=next1;
+            it1=next1;
+            it2=next2;
+        }
+        return ;
         
     }
 };
