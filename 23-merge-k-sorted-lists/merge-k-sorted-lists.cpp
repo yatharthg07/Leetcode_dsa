@@ -12,43 +12,46 @@ class Solution {
 public:
 
     ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-        ListNode* dummy=new ListNode(0,NULL);
-        ListNode* temp=dummy;
-        while(list1!=NULL&& list2!=NULL)
-        {
-            if(list1->val<=list2->val)
-            {
-                temp->next=list1;
-                list1=list1->next;
+        ListNode* dummy = new ListNode(0, NULL);
+        ListNode* temp = dummy;
+        
+        while (list1 != NULL && list2 != NULL) {
+            if (list1->val <= list2->val) {
+                temp->next = list1;
+                list1 = list1->next;
+            } else {
+                temp->next = list2;
+                list2 = list2->next;
             }
-            else
-            {
-                temp->next=list2;
-                list2=list2->next;
-            }
-            temp=temp->next;
+            temp = temp->next;
         }
-        if(list1!=NULL)
-        {
-            temp->next=list1;
+        
+        if (list1 != NULL) {
+            temp->next = list1;
         }
-        if(list2!=NULL)
-        {
-            temp->next=list2;
+        
+        if (list2 != NULL) {
+            temp->next = list2;
         }
-        ListNode* temp1=dummy->next;
+        
+        ListNode* result = dummy->next;
         delete dummy;
-        return temp1;
+        return result;
     }
 
-
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        if(lists.empty()) return NULL;
-        for(int i=1;i<lists.size();i++)
-        {
-            lists[i]=mergeTwoLists(lists[i-1],lists[i]);
+        if (lists.empty()) return nullptr;
+        return mergeKListsHelper(lists, 0, lists.size() - 1);
+    }
+
+    ListNode* mergeKListsHelper(vector<ListNode*>& lists, int left, int right) {
+        if (left == right) {
+            return lists[left];
         }
-        return lists[lists.size()-1];
         
+        int mid = left + (right - left) / 2;
+        ListNode* l1 = mergeKListsHelper(lists, left, mid);
+        ListNode* l2 = mergeKListsHelper(lists, mid + 1, right);
+        return mergeTwoLists(l1, l2);
     }
 };
