@@ -1,57 +1,25 @@
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
- */
 class Solution {
 public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if(lists.size() == 0)   return NULL;
+        priority_queue<pair<int, ListNode*>, vector<pair<int, ListNode*>>, greater<pair<int, ListNode*>>>pq;
+        for(int i = 0 ; i < lists.size() ; i++){
+            if(lists[i]){
+                pq.push({lists[i]->val,lists[i]});
+            }
+        }
+        ListNode* dummyNode = new ListNode(-1);
+        ListNode* temp = dummyNode;
 
-    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-        ListNode* dummy = new ListNode(0, NULL);
-        ListNode* temp = dummy;
-        
-        while (list1 != NULL && list2 != NULL) {
-            if (list1->val <= list2->val) {
-                temp->next = list1;
-                list1 = list1->next;
-            } else {
-                temp->next = list2;
-                list2 = list2->next;
+        while(!pq.empty()){
+            pair<int,ListNode*>p = pq.top();
+            temp->next = p.second;
+            pq.pop();
+            if(p.second->next){
+                pq.push({p.second->next->val,p.second->next});
             }
             temp = temp->next;
         }
-        
-        if (list1 != NULL) {
-            temp->next = list1;
-        }
-        
-        if (list2 != NULL) {
-            temp->next = list2;
-        }
-        
-        ListNode* result = dummy->next;
-        delete dummy;
-        return result;
-    }
-
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
-        if (lists.empty()) return nullptr;
-        return mergeKListsHelper(lists, 0, lists.size() - 1);
-    }
-
-    ListNode* mergeKListsHelper(vector<ListNode*>& lists, int left, int right) {
-        if (left == right) {
-            return lists[left];
-        }
-        
-        int mid = left + (right - left) / 2;
-        ListNode* l1 = mergeKListsHelper(lists, left, mid);
-        ListNode* l2 = mergeKListsHelper(lists, mid + 1, right);
-        return mergeTwoLists(l1, l2);
+        return dummyNode->next;
     }
 };
