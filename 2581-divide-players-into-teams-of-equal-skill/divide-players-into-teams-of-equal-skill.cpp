@@ -1,24 +1,35 @@
+#define ll long long
 class Solution {
 public:
     long long dividePlayers(vector<int>& skill) {
+        ll ans=0;
         int n=skill.size();
-        sort(skill.begin(),skill.end());
-        long long check=skill[0]+skill[n-1];
-        long long ans=0;
-        int l=0;
-        int r=n-1;
-        while(l<=r)
+        ll sum=accumulate(skill.begin(),skill.end(),0);
+        if(sum%(n/2)!=0)
         {
-            if(skill[l]+skill[r]!=check){
-                return -1;
-            }
-            else
+            return -1;
+        }
+        ll tar=sum/(n/2);
+
+        unordered_map<int,int> mp;
+        for(auto it:skill)
+        {
+            mp[it]++;
+        }
+        for(auto it:skill)
+        {
+            if(mp[it]!=0)
             {
-                ans+=(skill[l]*skill[r]);
-            }
-            l++;
-            r--;
+                mp[it]--;
+                if(mp.find(tar-it)==mp.end()||mp[tar-it]==0) return -1;
+                else{ 
+                    mp[tar-it]--;
+                    ans+=(it*(tar-it));
+                }
+            }    
         }
         return ans;
+
+        
     }
 };
