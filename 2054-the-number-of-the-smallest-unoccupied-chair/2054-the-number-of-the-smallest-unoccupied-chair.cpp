@@ -36,7 +36,7 @@ public:
     {
         mp.insert({0,i});
     }
-    map<int,int> taken;
+    unordered_map<int,int> taken;
     i=0;j=0;
     while(i!=n&& j!=n)
     {
