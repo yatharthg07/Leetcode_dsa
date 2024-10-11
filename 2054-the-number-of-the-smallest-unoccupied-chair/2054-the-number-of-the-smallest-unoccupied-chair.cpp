@@ -31,7 +31,7 @@ public:
         }
         req=max(req,cnt);
     }
-    multiset<pair<int,int>> mp;
+    set<pair<int,int>> mp;
     for(int i=0;i<req;i++)
     {
         mp.insert({0,i});
@@ -44,6 +44,10 @@ public:
         {
             auto it=mp.lower_bound({0,0});
             int temp=it->second;
+            if(a[i].second==targetFriend)
+            {
+                return temp;
+            }
             taken[a[i].second]=temp;
             mp.erase(it);
             mp.insert({1,temp});
