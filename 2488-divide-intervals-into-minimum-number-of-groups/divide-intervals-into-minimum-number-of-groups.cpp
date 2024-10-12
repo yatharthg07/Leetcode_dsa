@@ -1,32 +1,27 @@
 class Solution {
 public:
-    static bool cmp(vector<int> a,vector<int> b)
-    {
-        return a[1]<b[1];
-    }
+
     int minGroups(vector<vector<int>>& intervals) {
-        sort(intervals.begin(),intervals.end(),cmp);
+        sort(intervals.begin(),intervals.end());
+        priority_queue<int,vector<int> ,greater<int>> pq;
         int cnt=0;
-        multiset<int> st;
         for(auto it:intervals)
         {
-            if(st.empty())
+            if(pq.empty())
             {
+                pq.push(it[1]);
                 cnt++;
-                st.insert(it[1]);
                 continue;
             }
-            auto ite=st.lower_bound(it[0]);
-            if(ite==st.begin())
+            if(pq.top()<it[0])
+            {
+                pq.pop();
+            }
+            else
             {
                 cnt++;
-                st.insert(it[1]);
             }
-            else{
-                ite--;
-                st.erase(ite);
-                st.insert(it[1]);
-            }
+            pq.push(it[1]);
         }
         return cnt;
         
