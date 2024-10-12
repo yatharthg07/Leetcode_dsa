@@ -1,47 +1,37 @@
 
 class Solution {
 public:
-    int smallestChair(vector<vector<int>>& times, int targetFriend) {
-    int n=times.size();
-
-    vector<pair<int,int>> a(n);
-    vector<pair<int,int>> d(n);
-    for(int i=0;i<n;i++)
-    {
-        a[i]={times[i][0],i};
-        d[i]={times[i][1],i};
-    }
-    sort(a.begin(),a.end());
-    sort(d.begin(),d.end());
-    int i=0;
-    int j=0;
-    set<int> s;
-    unordered_map<int,int> taken;
-    int chair=0;
-    while(i!=n && j!=n)
-    {
-        if(a[i].first<d[j].first)
-        {
-            if(s.empty())
-            {
-                taken[a[i].second]=chair++;
+int smallestChair(vector<vector<int>>& times, int t) {
+        int arrival = times[t][0];
+        sort(times.begin(), times.end());
+        set<int> avilableSeats;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        int newSeat = 0;
+        int result;
+        for(int i=0; i<times.size(); i++) {
+            int seat=-1;
+            while(!pq.empty() && pq.top().first <= times[i][0]) {
+                seat = pq.top().second;
+                pq.pop();
+                avilableSeats.insert(seat);
             }
-            else
-            {
-                taken[a[i].second]=*s.begin();
-                s.erase(s.begin());
+            if(avilableSeats.size() > 0) {
+                seat = *(avilableSeats.begin());
+                avilableSeats.erase(seat);
             }
-            i++;
+            else {
+                seat = newSeat++;
+            }
+            pq.push({times[i][1], seat});
+            if(times[i][0] == arrival) {
+                result = seat;
+                break;
+            }
         }
-        else
-        {
-            s.insert(taken[d[j].second]);
-            j++;
-        }
+        return result;
     }
-    return taken[targetFriend];
     
 
         
-    }
+    
 };
