@@ -14,35 +14,62 @@ public:
 
     // Decodes your encoded data to tree.
     TreeNode* deserialize(string data) {
-        // Split the data string into tokens using a stringstream.
+        if (data == "N") return NULL;
+        
+        // Step 1: Tokenize the serialized string
         vector<string> tokens;
-        stringstream ss(data);
-        string token;
-        while(getline(ss, token, ',')) {
-            tokens.push_back(token);
+        int i = 0;
+        while (i < data.size()) {
+            int pos = data.find(',', i);
+            if (pos == string::npos) pos = data.size();
+            tokens.push_back(data.substr(i, pos - i));
+            i = pos + 1;
         }
 
-        // Use an index to keep track of the current position in tokens.
+        if (tokens.empty()) return NULL;
+
+        // Step 2: Initialize variables
+        stack<pair<TreeNode*, int>> st; // Pair of node and state (0: left, 1: right, 2: done)
         int idx = 0;
-        return deserializeHelper(tokens, idx);
-    }
 
-private:
-    // Helper function for deserialization.
-    TreeNode* deserializeHelper(vector<string>& tokens, int& idx) {
-        // If we reach the end of tokens or encounter "N", return NULL.
-        if (idx >= tokens.size() || tokens[idx] == "N") {
-            idx++;
-            return NULL;
+        // Create root node
+        TreeNode* root = new TreeNode(stoi(tokens[idx++]));
+        st.push({root, 0});
+
+        // Step 3: Iterate over tokens
+        while (idx < tokens.size() && !st.empty()) {
+            auto& [node, state] = st.top();
+
+            if (state == 0) {
+                // Process left child
+                if (tokens[idx] != "N") {
+                    TreeNode* leftChild = new TreeNode(stoi(tokens[idx]));
+                    node->left = leftChild;
+                    st.top().second = 1; // Update state to process right child next
+                    st.push({leftChild, 0}); // Push left child onto stack
+                } else {
+                    node->left = NULL;
+                    st.top().second = 1; // Update state to process right child next
+                }
+                idx++;
+            } else if (state == 1) {
+                // Process right child
+                if (tokens[idx] != "N") {
+                    TreeNode* rightChild = new TreeNode(stoi(tokens[idx]));
+                    node->right = rightChild;
+                    st.top().second = 2; // Update state to done
+                    st.push({rightChild, 0}); // Push right child onto stack
+                } else {
+                    node->right = NULL;
+                    st.top().second = 2; // Update state to done
+                }
+                idx++;
+            } else {
+                // Both children have been processed; pop the node
+                st.pop();
+            }
         }
 
-        // Create a new node with the current value.
-        int val = stoi(tokens[idx++]);
-        TreeNode* node = new TreeNode(val);
-
-        // Recursively build the left and right subtrees.
-        node->left = deserializeHelper(tokens, idx);
-        node->right = deserializeHelper(tokens, idx);
-        return node;
+        return root;
     }
 };
