@@ -34,7 +34,7 @@ public:
         if(root==NULL)return 0;
         int lh=leftheight(root);
         int rh=rightheight(root);
-        if(lh==rh) return (pow(2,lh)-1);
+        if(lh==rh) return ((1<<lh)-1);
         else return 1+rec(root->left)+rec(root->right);
     }
     int countNodes(TreeNode* root) {
