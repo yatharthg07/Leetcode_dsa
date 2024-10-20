@@ -1,32 +1,37 @@
 class Solution {
 public:
     string robotWithString(string s) {
-        map<char, int> mp;
+        vector<int> freq(26, 0);  // Frequency of each character (a-z)
+        for (char c : s) {
+            freq[c - 'a']++;  // Count the occurrences of each character
+        }
+        
         stack<char> st;
-        for (auto c : s) {
-            mp[c]++;
-        }
         string ans;
-        for (int i = 0; i < s.length(); i++) {
-            st.push(s[i]);
-            mp[s[i]]--;
-            if (mp[s[i]] == 0) {
-                mp.erase(s[i]);
+        char minChar = 'a';  // Smallest character we need to consider for popping
+        
+        for (char c : s) {
+            st.push(c);
+            freq[c - 'a']--;  // Reduce frequency as this character is processed
+            
+            // Update minChar to the smallest remaining character in `freq`
+            while (minChar <= 'z' && freq[minChar - 'a'] == 0) {
+                minChar++;
             }
-            while (!st.empty()) {
-                auto it = mp.lower_bound(st.top());
-                if (it == mp.begin()) {
-                    ans.push_back(st.top());
-                    st.pop();
-                } else {
-                    break;
-                }
+            
+            // Pop from stack while the top character is <= minChar
+            while (!st.empty() && st.top() <= minChar) {
+                ans.push_back(st.top());
+                st.pop();
             }
         }
+        
+        // Pop remaining characters from the stack
         while (!st.empty()) {
             ans.push_back(st.top());
             st.pop();
         }
+        
         return ans;
     }
 };
