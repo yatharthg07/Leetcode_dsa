@@ -3,6 +3,7 @@ class DisjointSet {
 public:
     vector<int> size;
     int maxx=1;
+    int comp;
     DisjointSet(int n) {
         rank.resize(n + 1, 0);
         parent.resize(n + 1);
@@ -11,6 +12,7 @@ public:
             parent[i] = i;
             size[i] = 1;
         }
+        comp=n;
     }
 
     int findUPar(int node) {
@@ -19,44 +21,23 @@ public:
         return parent[node] = findUPar(parent[node]);
     }
 
-    void unionByRank(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (rank[ulp_u] < rank[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-        }
-        else if (rank[ulp_v] < rank[ulp_u]) {
-            parent[ulp_v] = ulp_u;
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            rank[ulp_u]++;
-        }
-    }
-
     void unionBySize(int u, int v) {
         int ulp_u = findUPar(u);
         int ulp_v = findUPar(v);
         if (ulp_u == ulp_v) return;
+
         if (size[ulp_u] < size[ulp_v]) {
             parent[ulp_u] = ulp_v;
             size[ulp_v] += size[ulp_u];
-            size[ulp_u]=1;
-            maxx=max(maxx,size[ulp_v]);
         }
         else {
             parent[ulp_v] = ulp_u;
             size[ulp_u] += size[ulp_v];
-            size[ulp_v]=1;
-            maxx=max(maxx,size[ulp_u]);
-
         }
+        comp--;
     }
 };
 
-int maxx=10e4;
-int maxy=10e4;
 class Solution {
 public:
     int removeStones(vector<vector<int>>& stones) {
@@ -95,15 +76,16 @@ public:
             }
         }
 
-        int ans=0;
-        for(int i=0;i<ds.size.size();i++)
-        {
-            if(ds.size[i]>1)
-            {
-                ans+=ds.size[i]-1;
-            }
-        }
-        return ans;
+        // int ans=0;
+        // for(int i=0;i<ds.size.size();i++)
+        // {
+        //     if(ds.size[i]>1)
+        //     {
+        //         ans+=ds.size[i]-1;
+        //     }
+        // }
+        // return ans;
+        return n-ds.comp;
 
 
         
