@@ -75,18 +75,13 @@ public:
                 ds.unionBySize(it.second[i],it.second[i+1]);
             }
         }
-
-        // int ans=0;
-        // for(int i=0;i<ds.size.size();i++)
-        // {
-        //     if(ds.size[i]>1)
-        //     {
-        //         ans+=ds.size[i]-1;
-        //     }
-        // }
-        // return ans;
-        return n-ds.comp;
-
+        int ans=0;
+        for(int i=0;i<n;i++){
+            if(ds.findUPar(i)==i){
+                ans+=ds.size[i]-1;
+            }
+        }
+        return ans;
 
         
     }
